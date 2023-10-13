@@ -7,21 +7,38 @@
             (dragleave)="onDragLeave($event)"
             (drop)="onDrop($event)">
             <p>Click or drag a file here to upload.</p>
+            <mat-icon class="mat-icon-colors" color="primary">upload</mat-icon>
             <input type="file" #fileInput (change)="handleFiles(fileInput.files)" accept="image/*" style="display: none" />
             
         </div>
         <div class="image-preview">
-            <p *ngIf="!firstImgUploaded; else display_img">
-                image preview
-            </p>
+            <div class="no-image-available" *ngIf="!firstImgUploaded; else display_img">
+                <p>image preview</p>
+                <mat-icon class="mat-icon-colors" color="primary">image</mat-icon>
+            </div>
             <ng-template #display_img>
-                <img class="uploaded_img" *ngFor="let file of uploadedFiles" [src]="file.dataURL" alt="Uploaded Image" width="200">
+                <img class="uploaded_img" *ngFor="let file of uploadedFiles" [src]="file.dataURL" alt="Uploaded Image">
             </ng-template>
         </div>
     </div>
     <div id="file-list">
         <p *ngFor="let item of uploadedFiles">
             File Name: {{ item.file.name }}, Size: {{ item.file.size }} bytes
+        </p>
+        <p *ngIf="successfulUpload && firstImgUploaded && !standBy">
+            Status: Success! Backend script received the image. 
+        </p>
+        <div *ngIf="!successfulUpload && firstImgUploaded && !standBy && lastError != null">
+            <p>
+                Status: Failed. Please make sure the backend script is running.
+            </p>
+            <p>
+                File upload failed | Message (Status {{ lastError.status }}): {{ lastError.error.error }}
+            </p>
+        </div>
+
+        <p>
+            Welcome to our CS549 Final Project! Please upload a portrait image to get started.
         </p>
     </div>
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +13,9 @@ export class DashboardComponent implements OnInit {
 
   onDragOverFlag: boolean = false;
   firstImgUploaded: boolean = false;
+  successfulUpload: boolean = false;
+  lastError: HttpErrorResponse | null = null;
+  standBy: boolean = false;
 
   constructor(private http: HttpClient) {}
 
@@ -51,10 +55,7 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    /* the user has uploaded an image for the first item */
-    if (!this.firstImgUploaded) {
-      this.firstImgUploaded = true;
-    }
+    this.standBy = true;
 
     this.uploadedFiles = [];
     const file: File = files.item(0)!;
@@ -68,15 +69,42 @@ export class DashboardComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
 
-    this.http.post('https://127.0.0.1:5000/upload', formData).subscribe(
-      (response) => {
-        // Handle the server's response here
-        console.log('File uploaded successfully.', response);
-      },
-      (error) => {
-        console.error('File upload failed:', error);
+    this.http.post('https://127.0.0.1:5000/upload', formData).pipe(
+      catchError((error: HttpErrorResponse) => {
+        this.lastError = error;
+        this.successfulUpload = false;
+
+        /* the user has uploaded an image for the first item */
+        if (!this.firstImgUploaded) {
+          this.firstImgUploaded = true;
+        }
+
+        if (error.status === 0) {
+          // A client-side or network error occurred. Handle it accordingly.
+          console.error('An error occurred:', error.error, error.status);
+        } else {
+          // The backend returned an unsuccessful response code.
+          // The response body may contain clues as to what went wrong.
+          console.error(`Backend returned code ${error.status}, body was: `, error.error);
+        }
+
+        this.standBy = false;
+
+        return throwError(() => new Error('Something bad happened; please try again later.'));
+      })
+    ).subscribe((resp: any) => {
+      console.log("Successfully sent data to backend with response: ", resp);
+      this.lastError = null;
+      this.successfulUpload = true;
+
+      /* the user has uploaded an image for the first item */
+      if (!this.firstImgUploaded) {
+        this.firstImgUploaded = true;
       }
-    );
+
+      this.standBy = false;
+
+    });
     
   }
 
