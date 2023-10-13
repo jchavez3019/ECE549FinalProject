@@ -1,0 +1,28 @@
+<div class="main-dashboard">
+
+    <div class="image-handling">
+        <div class="image-drop" [ngClass]="[(onDragOverFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
+            (click)="fileInput.click()"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)">
+            <p>Click or drag a file here to upload.</p>
+            <input type="file" #fileInput (change)="handleFiles(fileInput.files)" accept="image/*" style="display: none" />
+            
+        </div>
+        <div class="image-preview">
+            <p *ngIf="!firstImgUploaded; else display_img">
+                image preview
+            </p>
+            <ng-template #display_img>
+                <img class="uploaded_img" *ngFor="let file of uploadedFiles" [src]="file.dataURL" alt="Uploaded Image" width="200">
+            </ng-template>
+        </div>
+    </div>
+    <div id="file-list">
+        <p *ngFor="let item of uploadedFiles">
+            File Name: {{ item.file.name }}, Size: {{ item.file.size }} bytes
+        </p>
+    </div>
+
+</div>

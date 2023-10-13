@@ -1,0 +1,39 @@
+.main-dashboard {
+    height: 100%;
+    width: 100%;
+}
+
+.image-handling {
+    align-self: center;
+    display: grid;
+    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    height: 50%;
+    margin: 10% auto 0 auto;
+    justify-self: center;
+    width: 80%;
+}
+
+.image-drop {
+    width: 100%;
+    height: 100%;
+    background-color: aqua;
+}
+
+.image-preview {
+    border: 2px solid black;
+}
+
+.uploaded_img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}
+
+.showDropAreaBorder {
+    border: 2px dashed #333;
+}
+
+.hideDropAreaBorder {
+    border: 2px dashed #ccc
+}
