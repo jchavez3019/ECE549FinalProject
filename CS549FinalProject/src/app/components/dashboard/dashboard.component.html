@@ -89,4 +89,35 @@
         </div>
     </div>
 
+    <div class="display-images-container">
+        <div class="imageToggleButtonContainer">
+            <button #toggleTrainingImages id="toggleTrainingImages" [disabled]="showTrainingImages" (click)="toggleImageContainer(toggleTrainingImages)" >training</button>
+            <button #toggleTestingImages id="toggleTestingImages" [disabled]="!showTrainingImages" (click)="toggleImageContainer(toggleTestingImages)">testing</button>
+        </div>
+        <div *ngIf="showTrainingImages;then trainingImagesPreview else testingImagesPreview">here is ignored</div>
+        <div class="display-images">
+
+            <ng-template #trainingImagesPreview>
+                <cdk-virtual-scroll-viewport [itemSize]="numTrainingDataImagesUploaded" (scrolledIndexChange)="loadMoreTrainingImages()" class="viewport">
+                    <mat-grid-list cols="8" rowHeight="1:1">
+                        <mat-grid-tile *cdkVirtualFor="let image of trainingImages; let i = index" class="viewport-item">
+                            <img [src]="'data:image/jpeg;base64,' + image" alt="Image {{ i }}" (click)="openImageModal('data:image/jpeg;base64,' + image, i, true)">
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </cdk-virtual-scroll-viewport>
+            </ng-template>
+
+            <ng-template #testingImagesPreview>
+                <cdk-virtual-scroll-viewport [itemSize]="numTestingDataImagesUploaded" (scrolledIndexChange)="loadMoreTestingImages()" class="viewport">
+                    <mat-grid-list cols="8" rowHeight="1:1">
+                        <mat-grid-tile *cdkVirtualFor="let image of testingImages; let i = index" class="viewport-item">
+                            <img [src]="'data:image/jpeg;base64,' + image" alt="Image {{ i }}" (click)="openImageModal('data:image/jpeg;base64,' + image, i, false)">
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </cdk-virtual-scroll-viewport>
+            </ng-template>
+
+        </div>
+    </div>
+
 </div>

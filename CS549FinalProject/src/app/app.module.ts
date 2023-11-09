@@ -26,6 +26,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
 import { DescriptionComponent } from './components/description/description.component';
 import { AboutUsComponent } from './components/about-us/about-us.component';
+import { MatGridListModule } from '@angular/material/grid-list';
+
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { ModalComponent } from './components/dashboard/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +37,8 @@ import { AboutUsComponent } from './components/about-us/about-us.component';
     DashboardComponent,
     NavBarComponent,
     DescriptionComponent,
-    AboutUsComponent
+    AboutUsComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +56,9 @@ import { AboutUsComponent } from './components/about-us/about-us.component';
     MatTooltipModule,
     MatListModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, 
+    ScrollingModule,
+    MatGridListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

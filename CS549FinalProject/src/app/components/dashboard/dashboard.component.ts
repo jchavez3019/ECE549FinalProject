@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { ModalComponent } from './modal/modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +16,9 @@ export class DashboardComponent implements OnInit {
   onDragOverTrainingFlag: boolean = false;
   onDragOverTestingFlag: boolean = false;
   uploadedTrainingData: boolean = false;
+  numTrainingDataImagesUploaded: number = 0;
   uploadedTestingData: boolean = false;
+  numTestingDataImagesUploaded: number = 0;
   firstImgUploaded: boolean = false;
   successfulUpload: boolean = false;
   lastError: HttpErrorResponse | null = null;
@@ -26,7 +30,19 @@ export class DashboardComponent implements OnInit {
   /* testing data set */
   testingDataFiles: { file: File; dataURL: string }[] = [];
 
-  constructor(private http: HttpClient) {}
+  /* for displaying the uploaded images */
+  trainingImages: any[] = []; // Array to hold images
+  isTrainingImagesLoading: boolean = false;
+  
+
+  testingImages: any[] = []; // Array to hold images
+  isTestingImagesLoading: boolean = false;
+
+  batchSize: number = 20;
+
+  showTrainingImages = true;
+
+  constructor(private http: HttpClient, private dialog: MatDialog) {}
 
   ngOnInit(): void {}
 
@@ -121,11 +137,13 @@ export class DashboardComponent implements OnInit {
 
     /* save the files that were uploaded */
     if (isTrainingData) {
+      this.numTrainingDataImagesUploaded = files.length;
       this.trainingDataFiles = uploadedFiles;
       formData.append('isTrainingData', 'true');
       this.uploadedTrainingData = true;
     }
     else {
+      this.numTestingDataImagesUploaded = files.length;
       this.testingDataFiles = uploadedFiles;
       formData.append('isTrainingData', 'false');
       this.uploadedTestingData = true;
@@ -166,12 +184,80 @@ export class DashboardComponent implements OnInit {
 
       this.standBy = false;
 
+      /* retrive the images to display */
+      if (isTrainingData) {
+        this.loadMoreTrainingImages();
+        console.log(`Training data images: ${this.numTrainingDataImagesUploaded}`)
+      }
+      else {
+        this.loadMoreTestingImages();
+      }
+
     });
     
   }
 
+  loadMoreTrainingImages(): void {
+
+    if (!this.uploadedTrainingData)
+      return;
+
+    if (!this.isTrainingImagesLoading) {
+      this.isTrainingImagesLoading = true;
+      const startIndex = this.trainingImages.length;
+      this.http.get<any>('https://127.0.0.1:5000/get-training-images?startIndex=' + startIndex)
+        .subscribe((response: any) => {
+          this.trainingImages = this.trainingImages.concat(response);
+          this.isTrainingImagesLoading = false;
+        });
+    }
+  }
+
+  loadMoreTestingImages(): void {
+
+    if (!this.uploadedTestingData)
+      return;
+
+    if (!this.isTestingImagesLoading) {
+      this.isTestingImagesLoading = true;
+      const startIndex = this.testingImages.length;
+      this.http.get<any>('https://127.0.0.1:5000/get-testing-images?startIndex=' + startIndex)
+        .subscribe((response: any) => {
+          this.testingImages = this.testingImages.concat(response);
+          this.isTestingImagesLoading = false;
+        });
+    }
+  }
+
+  toggleImageContainer(el: any) {
+    if (el.id == "toggleTrainingImages") {
+      if (this.showTrainingImages == true || !this.uploadedTrainingData) {
+        return;
+      }
+      this.showTrainingImages = true;
+    }
+    else if (el.id == "toggleTestingImages") {
+      if (this.showTrainingImages == false || !this.uploadedTestingData) {
+        return;
+      }
+      this.showTrainingImages = false;
+    }
+  }
+
+  openImageModal(base64Img: any, i: number, isTraining: boolean): void {
+    // Simulate base64 image data (replace this with your actual base64 image data)
+    // const base64Image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...'; // Replace with your base64 image
+
+    const dialogRef = this.dialog.open(ModalComponent, {
+      width: '80%', // Adjust the width as needed
+      height: '80%', // Adjust the height as needed
+      data: { imageBase64: base64Img, idx: i , isTraining: isTraining} // Pass the base64 image data to the modal
+    });
+  }
   onStartProcessing() {
     
   }
 
 }
+
+// [ngClass]="[(!showTrainingImages) ? 'imageToggleDisabledEffect' : null]"
