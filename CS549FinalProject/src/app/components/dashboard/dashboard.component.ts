@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 
@@ -11,63 +11,125 @@ export class DashboardComponent implements OnInit {
 
   selectedFiles: FileList | undefined;
 
-  onDragOverFlag: boolean = false;
+  onDragOverTrainingFlag: boolean = false;
+  onDragOverTestingFlag: boolean = false;
+  uploadedTrainingData: boolean = false;
+  uploadedTestingData: boolean = false;
   firstImgUploaded: boolean = false;
   successfulUpload: boolean = false;
   lastError: HttpErrorResponse | null = null;
   standBy: boolean = false;
 
+  /* training data set */
+  trainingDataFiles: { file: File; dataURL: string }[] = [];
+
+  /* testing data set */
+  testingDataFiles: { file: File; dataURL: string }[] = [];
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {}
 
-  uploadedFiles: { file: File; dataURL: string }[] = [];
+  /* gets a handle on DOM elements for uploading files */
+  @ViewChild('trainingsetInput') trainingsetInput: any;
+  @ViewChild('testingsetInput') testingsetInput: any;
 
-  onDragOver(event: Event): void {
-    this.onDragOverFlag = true;
+  /* functions called for clicking on elements */
+  openTrainingsetInput() {
+    this.trainingsetInput.nativeElement.click();
+  }
+  openTestingsetInput() {
+    this.testingsetInput.nativeElement.click();
+  }
+
+  onDragOver(event: Event, el: any): void {
+    if (el.id == 'trainingsetDrop') {
+      this.onDragOverTrainingFlag = true;
+    }
+    else if (el.id == 'testingsetDrop') {
+      this.onDragOverTestingFlag = true;
+    }
     event.preventDefault();
   }
 
-  onDragLeave(event: Event): void {
-    this.onDragOverFlag = false;
+  onDragLeave(event: Event, el: any): void {
+    if (el.id == 'trainingsetDrop') {
+      this.onDragOverTrainingFlag = false;
+    }
+    else if (el.id == 'testingsetDrop') {
+      this.onDragOverTestingFlag = false;
+    }
     event.preventDefault();
   }
 
-  onDrop(event: DragEvent): void {
+  onDrop(event: DragEvent, el: any): void {
+
     event.preventDefault();
-    this.onDragOverFlag = false;
+    if (el.id == 'trainingsetDrop') {
+      this.onDragOverTrainingFlag = false;
+    }
+    else if (el.id == 'testingsetDrop') {
+      this.onDragOverTestingFlag = false;
+    }
 
     /* ensure the event has files that can be received */
     if (event != null && event.dataTransfer != null) {
-      this.handleFiles(event.dataTransfer.files);
+      this.handleFiles(event.dataTransfer.files, el);
     }
       
   }
 
-  handleFiles(files: FileList | null): void {
+  handleFiles(files: FileList | null, el: any): void {
     if (files == null) {
       console.error("handleFiles did not received type FileList");
       return;
     }
 
-    if (files.length > 1) {
-      console.error("Please only give one image");
-      return;
+    /* check which container the images were dropped into */
+    let isTrainingData: Boolean;
+    if (el.id == "trainingsetDrop") {
+      isTrainingData = true;
+    }
+    else {
+      isTrainingData = false;
     }
 
     this.standBy = true;
 
-    this.uploadedFiles = [];
-    const file: File = files.item(0)!;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataURL = event.target?.result as string;
-      this.uploadedFiles.push({ file, dataURL });
-    };
-    reader.readAsDataURL(file);
+    // this.uploadedFiles = [];
 
+    let uploadedFiles: { file: File; dataURL: string }[] = [];
+
+    // const file: File = files.item(0)!;
     const formData = new FormData();
-    formData.append('file', file);
+    for (let i = 0; i < files.length; i++) {
+      const file: File = files.item(i)!;
+
+      if (!file.type.startsWith('image/')) {
+        console.warn(`File with name ${file.name} was skipped because it is not of type image`);
+        continue;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataURL = event.target?.result as string;
+        uploadedFiles.push({ file, dataURL });
+      };
+      reader.readAsDataURL(file);
+      formData.append('images', file);
+    }
+
+    /* save the files that were uploaded */
+    if (isTrainingData) {
+      this.trainingDataFiles = uploadedFiles;
+      formData.append('isTrainingData', 'true');
+      this.uploadedTrainingData = true;
+    }
+    else {
+      this.testingDataFiles = uploadedFiles;
+      formData.append('isTrainingData', 'false');
+      this.uploadedTestingData = true;
+    }
 
     this.http.post('https://127.0.0.1:5000/upload', formData).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -105,6 +167,10 @@ export class DashboardComponent implements OnInit {
       this.standBy = false;
 
     });
+    
+  }
+
+  onStartProcessing() {
     
   }
 
