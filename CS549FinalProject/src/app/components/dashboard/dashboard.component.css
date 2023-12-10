@@ -7,11 +7,16 @@
     align-self: center;
     display: grid;
     gap: 15px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 5% 95%;
+    grid-template-columns: 1fr 1fr 1fr;
     height: 50%;
     margin: 10% auto 0 auto;
     justify-self: center;
     width: 80%;
+}
+
+.image-handling-labels {
+    text-align: center;
 }
 
 .image-drop {
@@ -77,4 +82,116 @@
 #file-list p {
     text-align: center;
     margin: 15px 0px;
+}
+
+.scrollContainers {
+    display: grid;
+    height: 10%;
+    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 15% 85%;
+}
+
+.training-file-list-scroll-container, .testing-file-list-scroll-container {
+    /* border-radius: 2rem 0% 0% 2rem; */
+    max-height: 100px;
+    overflow-y: scroll;
+}
+
+/* changing the view of the scrollbar in the gallery-content */
+.training-file-list-scroll-container::-webkit-scrollbar, .testing-file-list-scroll-container::-webkit-scrollbar {
+    width: 10px;
+}
+  
+/* Track */
+.training-file-list-scroll-container::-webkit-scrollbar-track, .testing-file-list-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* border radius is 42px so decrease height to have scroll bar fit inside */
+    border-radius: 20px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+  
+
+/* Handle */
+.training-file-list-scroll-container::-webkit-scrollbar-thumb, .testing-file-list-scroll-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 20px;
+}
+    
+/* Handle on hover */
+.training-file-list-scroll-container::-webkit-scrollbar-thumb:hover, .testing-file-list-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.start-processing-container {
+    padding: 20px 30%;
+    width: 40%; 
+}
+
+.start-processing {
+    align-items: flex-start;
+    border: solid black 2px;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    padding: 10px;
+}
+
+#startProcessingButton {
+    align-self: center;
+    background-color: rgb(73, 126, 239);
+    border-radius: 2rem;
+    color: white;
+    cursor: pointer;
+    width: 40%;
+}
+
+#startProcessingButton:disabled {
+    background-color: rgb(144, 147, 156);
+    cursor: initial;
+}
+
+.imageToggleButtonContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#toggleTrainingImages {
+    border-radius: 2rem 0px 0px 2rem;
+}
+
+#toggleTestingImages {
+    border-radius: 0px 2rem 2rem 0px;
+}
+
+.viewport {
+    height: 500px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #e9e7e9;
+}
+
+.viewport-item {
+    cursor: pointer;
+}
+
+.viewport-item:hover {
+    /* Apply a light shade of blue */
+    filter: brightness(120%) saturate(120%) hue-rotate(200deg);
+    /* You can adjust the values to get the desired color and effect */
+}
+
+.imageToggleButtonContainer button {
+    background-color: rgb(73, 126, 239);
+    color: white;
+}
+
+.imageToggleButtonContainer button:disabled {
+    background-color: rgb(144, 147, 156);
+    /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4); */
+    cursor: initial;
 }

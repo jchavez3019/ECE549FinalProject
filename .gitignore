@@ -1,0 +1,5 @@
+# ignore datasets
+LFW_Dataset/
+
+# ignore Python stuff
+*/__pycache__/

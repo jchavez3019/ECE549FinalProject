@@ -1,0 +1,13 @@
+<div class="modal">
+    <button (click)="close()" class="close-button">x</button>
+    <div class="imageContainer">
+        <img [src]="data.imageBase64" alt="Image" class="modal-image">
+
+        <div class="detectedFaceImages">
+            <div *ngFor="let image of faceImages; let i = index" class="viewport-item">
+                <img [src]="'data:image/jpeg;base64,' + image" alt="Image {{ i }}" class="face-images">
+            </div>
+        </div>
+        
+    </div>
+</div>

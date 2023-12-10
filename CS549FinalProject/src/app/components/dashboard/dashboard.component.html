@@ -1,14 +1,33 @@
 <div class="main-dashboard">
 
     <div class="image-handling">
-        <div class="image-drop" [ngClass]="[(onDragOverFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
-            (click)="fileInput.click()"
-            (dragover)="onDragOver($event)"
-            (dragleave)="onDragLeave($event)"
-            (drop)="onDrop($event)">
+        <p class="image-handling-labels">
+            Training Dataset
+        </p>
+        <p class="image-handling-labels">
+            Test Dataset
+        </p>
+        <p class="image-handling-labels">
+            Image Preview
+        </p>
+        <div #trainingsetDrop id="trainingsetDrop" class="image-drop" [ngClass]="[(onDragOverTrainingFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
+            (click)="openTrainingsetInput()"
+            (dragover)="onDragOver($event, trainingsetDrop)"
+            (dragleave)="onDragLeave($event, trainingsetDrop)"
+            (drop)="onDrop($event, trainingsetDrop)">
             <p>Click or drag a file here to upload.</p>
             <mat-icon class="mat-icon-colors" color="primary">upload</mat-icon>
-            <input type="file" #fileInput (change)="handleFiles(fileInput.files)" accept="image/*" style="display: none" />
+            <input type="file" #trainingsetInput (change)="handleFiles(trainingsetInput.files, trainingsetDrop)" multiple accept="image/*" style="display: none" />
+            
+        </div>
+        <div #testingsetDrop id="testingsetDrop" class="image-drop" [ngClass]="[(onDragOverTestingFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
+            (click)="openTestingsetInput()"
+            (dragover)="onDragOver($event, testingsetDrop)"
+            (dragleave)="onDragLeave($event, testingsetDrop)"
+            (drop)="onDrop($event, testingsetDrop)">
+            <p>Click or drag a file here to upload.</p>
+            <mat-icon class="mat-icon-colors" color="primary">upload</mat-icon>
+            <input type="file" #testingsetInput (change)="handleFiles(testingsetInput.files, testingsetDrop)" multiple accept="image/*" style="display: none" />
             
         </div>
         <div class="image-preview">
@@ -17,14 +36,30 @@
                 <mat-icon class="mat-icon-colors" color="primary">image</mat-icon>
             </div>
             <ng-template #display_img>
-                <img class="uploaded_img" *ngFor="let file of uploadedFiles" [src]="file.dataURL" alt="Uploaded Image">
+                <img class="uploaded_img" *ngFor="let file of trainingDataFiles" [src]="file.dataURL" alt="Uploaded Image">
             </ng-template>
         </div>
     </div>
     <div id="file-list">
-        <p *ngFor="let item of uploadedFiles">
-            File Name: {{ item.file.name }}, Size: {{ item.file.size }} bytes
-        </p>
+        <div class="scrollContainers">
+            <p *ngIf="uploadedTrainingData || uploadedTestingData">
+                Training Data Upload Status
+            </p>
+            <p *ngIf="uploadedTrainingData || uploadedTestingData">
+                Testing Data Upload Status
+            </p>
+            <div class="training-file-list-scroll-container" [ngStyle]="uploadedTrainingData ? { 'border': 'solid black 2px' } : null">
+                <p *ngFor="let item of trainingDataFiles">
+                    File Name: {{ item.file.name }}, Size: {{ item.file.size }} bytes
+                </p>
+            </div>
+            <div class="testing-file-list-scroll-container" [ngStyle]="uploadedTestingData ? { 'border': 'solid black 2px' } : null">
+                <p *ngFor="let item of testingDataFiles">
+                    File Name: {{ item.file.name }}, Size: {{ item.file.size }} bytes
+                </p>
+            </div>
+        </div>
+        
         <p *ngIf="successfulUpload && firstImgUploaded && !standBy">
             Status: Success! Backend script received the image. 
         </p>
@@ -40,6 +75,49 @@
         <p>
             Welcome to our CS549 Final Project! Please upload a portrait image to get started.
         </p>
+    </div>
+
+    <div class="start-processing-container">
+        <div class="start-processing">
+            <p>
+                Training Set Uploaded: {{  uploadedTrainingData  }}
+            </p>
+            <p>
+                Testing Set Uploaded: {{ uploadedTestingData }}
+            </p>
+            <button id="startProcessingButton" [disabled]="!uploadedTrainingData || !uploadedTestingData" (click)="onStartProcessing()">Start Processing</button>
+        </div>
+    </div>
+
+    <div class="display-images-container">
+        <div class="imageToggleButtonContainer">
+            <button #toggleTrainingImages id="toggleTrainingImages" [disabled]="showTrainingImages" (click)="toggleImageContainer(toggleTrainingImages)" >training</button>
+            <button #toggleTestingImages id="toggleTestingImages" [disabled]="!showTrainingImages" (click)="toggleImageContainer(toggleTestingImages)">testing</button>
+        </div>
+        <div *ngIf="showTrainingImages;then trainingImagesPreview else testingImagesPreview">here is ignored</div>
+        <div class="display-images">
+
+            <ng-template #trainingImagesPreview>
+                <cdk-virtual-scroll-viewport [itemSize]="numTrainingDataImagesUploaded" (scrolledIndexChange)="loadMoreTrainingImages()" class="viewport">
+                    <mat-grid-list cols="8" rowHeight="1:1">
+                        <mat-grid-tile *cdkVirtualFor="let image of trainingImages; let i = index" class="viewport-item">
+                            <img [src]="'data:image/jpeg;base64,' + image" alt="Image {{ i }}" (click)="openImageModal('data:image/jpeg;base64,' + image, i, true)">
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </cdk-virtual-scroll-viewport>
+            </ng-template>
+
+            <ng-template #testingImagesPreview>
+                <cdk-virtual-scroll-viewport [itemSize]="numTestingDataImagesUploaded" (scrolledIndexChange)="loadMoreTestingImages()" class="viewport">
+                    <mat-grid-list cols="8" rowHeight="1:1">
+                        <mat-grid-tile *cdkVirtualFor="let image of testingImages; let i = index" class="viewport-item">
+                            <img [src]="'data:image/jpeg;base64,' + image" alt="Image {{ i }}" (click)="openImageModal('data:image/jpeg;base64,' + image, i, false)">
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </cdk-virtual-scroll-viewport>
+            </ng-template>
+
+        </div>
     </div>
 
 </div>
