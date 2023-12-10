@@ -129,8 +129,8 @@ def get_testing_image_faces():
     face_images = returnDetectedFaces(testingImagePath + image_filename)
     final_images = []
 
-    buffered = BytesIO()
     for image in face_images:
+        buffered = BytesIO()
         image.save(buffered, format="JPEG")
         encoded_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
         final_images.append(encoded_img)
