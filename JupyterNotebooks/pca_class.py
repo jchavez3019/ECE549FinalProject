@@ -37,22 +37,29 @@ class LFW_IncrementalPCA(IncrementalPCA):
 
             Returns:
                 X_train_pca (np.array): X_train pca embeddings
+                Y_train_pca (np.array): Y_train labels
                 X_test_pca (np.array): X_test pca embeddings
+                Y_test_pca (np.array): Y_test labels
         """
 
         X_train_pca = X_test_pca = np.zeros((0, self.n_components_))
+        Y_train_pca = Y_test_pca = np.zeros((0, 1))
 
         for i, file in enumerate(self.dataset_paths):
             data = load(file)
-            X_train, X_test = data['arr_0'], data['arr_2']
+            X_train, Y_train, X_test, Y_test = data['arr_0'], data['arr_1'], data['arr_2'], data['arr_3']
             X_train = X_train.reshape(X_train.shape[0], -1)
             X_test = X_test.reshape(X_test.shape[0], -1)
+
             X_train_pca = np.vstack((X_train_pca, self.transform(X_train)))
             X_test_pca = np.vstack((X_test_pca, self.transform(X_test)))
 
+            Y_train_pca = np.vstack((Y_train_pca, Y_train))
+            Y_test_pca = np.vstack((Y_test_pca, Y_test))
+
         if display_progress:
-            print(f"X_train_pca shape {X_train_pca.shape} | X_test_pca {X_test_pca.shape}")
-        return X_train_pca, X_test_pca
+            print(f"X_train_pca shape {X_train_pca.shape} | X_test_pca {X_test_pca.shape} | Y_train_pca shape {Y_train_pca.shape} | Y_test_pca {Y_test_pca.shape}")
+        return X_train_pca, Y_train_pca, X_test_pca, Y_test_pca
     
     def save_embeddings(self, save_path: str, display_progress: bool=False):
         r""" Transforms the given datasets into embeddings and returns them
@@ -65,19 +72,24 @@ class LFW_IncrementalPCA(IncrementalPCA):
         """
                 
         X_train_pca = X_test_pca = np.zeros((0, self.n_components_))
+        Y_train_pca = Y_test_pca = np.zeros((0, 1))
 
         for i, file in enumerate(self.dataset_paths):
             data = load(file)
-            X_train, X_test = data['arr_0'], data['arr_2']
+            X_train, Y_train, X_test, Y_test = data['arr_0'], data['arr_1'], data['arr_2'], data['arr_3']
             X_train = X_train.reshape(X_train.shape[0], -1)
             X_test = X_test.reshape(X_test.shape[0], -1)
+
             X_train_pca = np.vstack((X_train_pca, self.transform(X_train)))
             X_test_pca = np.vstack((X_test_pca, self.transform(X_test)))
 
-        if display_progress:
-            print(f"X_train_pca shape {X_train_pca.shape} | X_test_pca {X_test_pca.shape}")
+            Y_train_pca = np.vstack((Y_train_pca, Y_train))
+            Y_test_pca = np.vstack((Y_test_pca, Y_test))
 
-        savez_compressed(save_path, X_train_pca, X_test_pca)
+        if display_progress:
+            print(f"X_train_pca shape {X_train_pca.shape} | X_test_pca {X_test_pca.shape} | Y_train_pca shape {Y_train_pca.shape} | Y_test_pca {Y_test_pca.shape}")
+
+        savez_compressed(save_path, X_train_pca, Y_train_pca, X_test_pca, Y_test_pca)
 
 if __name__ == '__main__':
 
