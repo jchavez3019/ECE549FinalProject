@@ -50,6 +50,8 @@ class LFW_IncrementalPCA(IncrementalPCA):
             X_train, Y_train, X_test, Y_test = data['arr_0'], data['arr_1'], data['arr_2'], data['arr_3']
             X_train = X_train.reshape(X_train.shape[0], -1)
             X_test = X_test.reshape(X_test.shape[0], -1)
+            Y_train = Y_train.reshape(-1,1)
+            Y_test = Y_test.reshape(-1,1)
 
             X_train_pca = np.vstack((X_train_pca, self.transform(X_train)))
             X_test_pca = np.vstack((X_test_pca, self.transform(X_test)))
@@ -79,6 +81,8 @@ class LFW_IncrementalPCA(IncrementalPCA):
             X_train, Y_train, X_test, Y_test = data['arr_0'], data['arr_1'], data['arr_2'], data['arr_3']
             X_train = X_train.reshape(X_train.shape[0], -1)
             X_test = X_test.reshape(X_test.shape[0], -1)
+            Y_train = Y_train.reshape(-1,1)
+            Y_test = Y_test.reshape(-1,1)
 
             X_train_pca = np.vstack((X_train_pca, self.transform(X_train)))
             X_test_pca = np.vstack((X_test_pca, self.transform(X_test)))
