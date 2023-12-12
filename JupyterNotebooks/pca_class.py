@@ -5,7 +5,7 @@ from os import listdir
 import re
 
 class LFW_IncrementalPCA(IncrementalPCA):
-    def __init__(self, dataset_paths: [str], n_components: int, batch_size: int = 16):
+    def __init__(self, dataset_paths: list[str], n_components: int, batch_size: int = 16):
         super(LFW_IncrementalPCA, self).__init__( 
             n_components=n_components,
             batch_size = batch_size
@@ -22,7 +22,6 @@ class LFW_IncrementalPCA(IncrementalPCA):
         """
 
         for i, file in enumerate(self.dataset_paths):
-            data = load(file)
             data = load(file)
             X_train = data['arr_0']
             X_train = X_train.reshape(X_train.shape[0], -1)
