@@ -24,6 +24,8 @@ class LFW_IncrementalPCA(IncrementalPCA):
         for i, file in enumerate(self.dataset_paths):
             data = load(file)
             X_train = data['arr_0']
+            if display_progress:
+                print(f"({i}, {file} | X_train.shape {X_train.shape})")
             X_train = X_train.reshape(X_train.shape[0], -1)
             if (display_progress):
                 print(f"i = {i} | Partial fit on X_train of sizes {X_train.shape}")
@@ -47,6 +49,8 @@ class LFW_IncrementalPCA(IncrementalPCA):
         for i, file in enumerate(self.dataset_paths):
             data = load(file)
             X_train, Y_train, X_test, Y_test = data['arr_0'], data['arr_1'], data['arr_2'], data['arr_3']
+            if display_progress:
+                print(f"({i}, {file} | X_train.shape {X_train.shape}, Y_train.shape {Y_train.shape}, X_test.shape {X_test.shape}, Y_test.shape {Y_test.shape})")
             X_train = X_train.reshape(X_train.shape[0], -1)
             X_test = X_test.reshape(X_test.shape[0], -1)
             Y_train = Y_train.reshape(-1,1)
@@ -57,6 +61,9 @@ class LFW_IncrementalPCA(IncrementalPCA):
 
             Y_train_pca = np.vstack((Y_train_pca, Y_train))
             Y_test_pca = np.vstack((Y_test_pca, Y_test))
+
+        Y_train_pca = Y_train_pca.ravel()
+        Y_test_pca = Y_test_pca.ravel()
 
         if display_progress:
             print(f"X_train_pca shape {X_train_pca.shape} | X_test_pca {X_test_pca.shape} | Y_train_pca shape {Y_train_pca.shape} | Y_test_pca {Y_test_pca.shape}")
@@ -78,6 +85,8 @@ class LFW_IncrementalPCA(IncrementalPCA):
         for i, file in enumerate(self.dataset_paths):
             data = load(file)
             X_train, Y_train, X_test, Y_test = data['arr_0'], data['arr_1'], data['arr_2'], data['arr_3']
+            if display_progress:
+                print(f"({i}, {file} | X_train.shape {X_train.shape}, Y_train.shape {Y_train.shape}, X_test.shape {X_test.shape}, Y_test.shape {Y_test.shape})")
             X_train = X_train.reshape(X_train.shape[0], -1)
             X_test = X_test.reshape(X_test.shape[0], -1)
             Y_train = Y_train.reshape(-1,1)
@@ -89,9 +98,11 @@ class LFW_IncrementalPCA(IncrementalPCA):
             Y_train_pca = np.vstack((Y_train_pca, Y_train))
             Y_test_pca = np.vstack((Y_test_pca, Y_test))
 
+        Y_train_pca = Y_train_pca.ravel()
+        Y_test_pca = Y_test_pca.ravel()
+
         if display_progress:
             print(f"X_train_pca shape {X_train_pca.shape} | X_test_pca {X_test_pca.shape} | Y_train_pca shape {Y_train_pca.shape} | Y_test_pca {Y_test_pca.shape}")
-
         savez_compressed(save_path, X_train_pca, Y_train_pca, X_test_pca, Y_test_pca)
 
 if __name__ == '__main__':
@@ -106,7 +117,8 @@ if __name__ == '__main__':
     for file in listdir('./'):
         if re.search(reg_expr, file):
             dataset_npz_filenames.append(file)
-    
+    dataset_npz_filenames = sorted(dataset_npz_filenames)
+    print(dataset_npz_filenames)
     # create an lfw_ipca instance and give the label of datasets and desired n_componentes
     lfw_ipca = LFW_IncrementalPCA(dataset_npz_filenames, n_components=n_components)
     
@@ -114,4 +126,4 @@ if __name__ == '__main__':
     lfw_ipca.start_fit(display_progress=True)
 
     # save the embeddings as a compressed .npz file
-    lfw_ipca.save_embeddings("lfw-deepfunneled-pca-embeddings-150.npz", display_progress=True)
+    lfw_ipca.save_embeddings("lfw-deepfunneled-pca-embeddings-50.npz", display_progress=True)
