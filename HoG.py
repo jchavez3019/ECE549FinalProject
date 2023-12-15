@@ -178,13 +178,14 @@ class HOG_face_detector:
         ax.add_patch(plt.Rectangle((j, i), Nj, Ni, edgecolor='red',
                                     alpha=0.5, lw=3, facecolor='none'))
         plt.show()
+        return new_image
 
 def main():
     input_image_path = "./face.jpg"
     hog_detector = HOG_face_detector(input_image_path)
     hog_detector.get_training_data()
     hog_detector.train_model()
-    hog_detector.detect_face_plot()
+    detected_face = hog_detector.detect_face_plot()
 
 if __name__ == "__main__":
     main()

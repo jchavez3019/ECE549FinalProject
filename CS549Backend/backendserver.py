@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, jsonify
+from flask_socketio import SocketIO
 from flask_cors import CORS
 import cv2
 from PIL import Image
@@ -13,6 +14,7 @@ testingImagePath = "./uploaded_images/testingDataSet/"
 "/home/jorgejc2/Documents/ClassRepos/CS549FinalProjectFrontEnd/CS549Backend/uploaded_images/trainingDataSet"
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 CORS(app, resources={r"/upload/*": {"origins": "http://localhost:4200"}, 
                      r"/get-training-images/*": {"origins": "http://localhost:4200"},
                      r"/get-testing-images/*": {"origins": "http://localhost:4200"},
@@ -64,7 +66,7 @@ def upload_file():
                 img.save(os.path.join(toSavePath, img.filename))
                 image = Image.open(os.path.join(toSavePath, img.filename))   
 
-                 
+        
 
         # Process the uploaded file
         # You can save it, manipulate it, etc.
@@ -145,7 +147,12 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png', 'gif'}
 
 if __name__ == '__main__':
-        app.run(
+    # app.run(
+    #     host='0.0.0.0', port=5000,
+    #     ssl_context=('server.crt', 'server.key'),
+    #     debug=True
+    # )
+    socketio.run(app,
         host='0.0.0.0', port=5000,
         ssl_context=('server.crt', 'server.key'),
         debug=True

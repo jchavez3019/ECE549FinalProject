@@ -4,12 +4,12 @@
         <p class="image-handling-labels">
             Training Dataset
         </p>
-        <p class="image-handling-labels">
+        <!-- <p class="image-handling-labels">
             Test Dataset
-        </p>
-        <p class="image-handling-labels">
+        </p> -->
+        <!-- <p class="image-handling-labels">
             Image Preview
-        </p>
+        </p> -->
         <div #trainingsetDrop id="trainingsetDrop" class="image-drop" [ngClass]="[(onDragOverTrainingFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
             (click)="openTrainingsetInput()"
             (dragover)="onDragOver($event, trainingsetDrop)"
@@ -20,7 +20,7 @@
             <input type="file" #trainingsetInput (change)="handleFiles(trainingsetInput.files, trainingsetDrop)" multiple accept="image/*" style="display: none" />
             
         </div>
-        <div #testingsetDrop id="testingsetDrop" class="image-drop" [ngClass]="[(onDragOverTestingFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
+        <!-- <div #testingsetDrop id="testingsetDrop" class="image-drop" [ngClass]="[(onDragOverTestingFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
             (click)="openTestingsetInput()"
             (dragover)="onDragOver($event, testingsetDrop)"
             (dragleave)="onDragLeave($event, testingsetDrop)"
@@ -29,8 +29,8 @@
             <mat-icon class="mat-icon-colors" color="primary">upload</mat-icon>
             <input type="file" #testingsetInput (change)="handleFiles(testingsetInput.files, testingsetDrop)" multiple accept="image/*" style="display: none" />
             
-        </div>
-        <div class="image-preview">
+        </div> -->
+        <!-- <div class="image-preview">
             <div class="no-image-available" *ngIf="!firstImgUploaded; else display_img">
                 <p>image preview</p>
                 <mat-icon class="mat-icon-colors" color="primary">image</mat-icon>
@@ -38,7 +38,7 @@
             <ng-template #display_img>
                 <img class="uploaded_img" *ngFor="let file of trainingDataFiles" [src]="file.dataURL" alt="Uploaded Image">
             </ng-template>
-        </div>
+        </div> -->
     </div>
     <div id="file-list">
         <div class="scrollContainers">
@@ -89,6 +89,8 @@
         </div>
     </div>
 
+    <h3> Obtain a preview of the images you have uploaded below </h3>
+
     <div class="display-images-container">
         <div class="imageToggleButtonContainer">
             <button #toggleTrainingImages id="toggleTrainingImages" [disabled]="showTrainingImages" (click)="toggleImageContainer(toggleTrainingImages)" >training</button>
@@ -119,5 +121,7 @@
 
         </div>
     </div>
+
+    <h3> The categorized images are shown below </h3>
 
 </div>
