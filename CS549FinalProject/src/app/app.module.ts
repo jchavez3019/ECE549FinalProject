@@ -32,6 +32,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ModalComponent } from './components/dashboard/modal/modal.component';
 
+const config: SocketIoConfig = { url: 'https://127.0.0.1:5000/', options: {} };
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,6 +45,7 @@ import { ModalComponent } from './components/dashboard/modal/modal.component';
   ],
   imports: [
     BrowserModule,
+    SocketIoModule.forRoot(config),
     RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
     HttpClientModule,

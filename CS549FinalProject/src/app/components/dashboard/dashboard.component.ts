@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { catchError, throwError } from 'rxjs';
 import { ModalComponent } from './modal/modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { WebSocketService } from 'src/app/services/file-transfer.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,7 +43,7 @@ export class DashboardComponent implements OnInit {
 
   showTrainingImages = true;
 
-  constructor(private http: HttpClient, private dialog: MatDialog) {}
+  constructor(private http: HttpClient, private dialog: MatDialog, private webSocketService: WebSocketService) {}
 
   ngOnInit(): void {}
 
@@ -96,6 +97,14 @@ export class DashboardComponent implements OnInit {
   }
 
   handleFiles(files: FileList | null, el: any): void {
+    /* DEBUG: temporarily here to test web socket service */
+    const fn_handler = (data: any) => {
+      console.log(`Received delayed response from Flask server with message: ${data.message}`);
+    }
+
+    this.webSocketService.onDelayedResponse(fn_handler);
+    this.webSocketService.requestDelayedResponse();
+
     if (files == null) {
       console.error("handleFiles did not received type FileList");
       return;

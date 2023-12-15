@@ -14,12 +14,15 @@ testingImagePath = "./uploaded_images/testingDataSet/"
 "/home/jorgejc2/Documents/ClassRepos/CS549FinalProjectFrontEnd/CS549Backend/uploaded_images/trainingDataSet"
 
 app = Flask(__name__)
-socketio = SocketIO(app)
-CORS(app, resources={r"/upload/*": {"origins": "http://localhost:4200"}, 
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:4200")
+CORS(app, 
+    resources={r"/upload/*": {"origins": "http://localhost:4200"}, 
                      r"/get-training-images/*": {"origins": "http://localhost:4200"},
                      r"/get-testing-images/*": {"origins": "http://localhost:4200"},
                      r"/get-training-image-faces/*": {"origins": "http://localhost:4200"},
-                     r"/get-testing-image-faces/*": {"origins": "http://localhost:4200"}})
+                     r"/get-testing-image-faces/*": {"origins": "http://localhost:4200"},
+                     r"/flask_sockets/*": {"origins": "http://localhost:4200"},
+                     r"/socket.io/*": {"origins": "http://localhost:4200"}})
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -145,6 +148,18 @@ def get_testing_image_faces():
 def allowed_file(filename):
     # Implement a function to check the allowed file extensions
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'jpg', 'jpeg', 'png', 'gif'}
+
+# functions for debugging
+@socketio.on('delayed_request')
+def handle_delayed_request():
+    # Simulate a delay of 5 seconds asynchronously
+    print("Entered delayed response function")
+    socketio.sleep(5)
+    socketio.emit('delayed_response', {'message': 'Started Training your model'})
+    print("Emitted delayed response")
+    socketio.sleep(5)
+    socketio.emit('delayed_response', {'message': 'Finished Training your model'})
+    print("Emitted delayed response AGAIN")
 
 if __name__ == '__main__':
     # app.run(
