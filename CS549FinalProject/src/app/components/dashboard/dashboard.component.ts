@@ -37,7 +37,9 @@ export class DashboardComponent implements OnInit {
   
 
   testingImages: any[] = []; // Array to hold images
+  LFWSampleImages: any[] = [];
   isTestingImagesLoading: boolean = false;
+  isLFWSampleImagesLoading: boolean = false;
 
   batchSize: number = 20;
 
@@ -45,7 +47,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(private http: HttpClient, private dialog: MatDialog, private webSocketService: WebSocketService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadSampleImages();
+  }
 
   /* gets a handle on DOM elements for uploading files */
   @ViewChild('trainingsetInput') trainingsetInput: any;
@@ -236,6 +240,21 @@ export class DashboardComponent implements OnInit {
           this.isTestingImagesLoading = false;
         });
     }
+  }
+
+  loadSampleImages(): void {
+
+    if (!this.isLFWSampleImagesLoading) {
+      this.isLFWSampleImagesLoading = true;
+      const startIndex = this.LFWSampleImages.length;
+      this.http.get<any>('https://127.0.0.1:5000/get-sample-image-faces?startIndex=' + 0)
+        .subscribe((response: any) => {
+          this.LFWSampleImages = this.LFWSampleImages.concat(response);
+          console.log('Recieved LFW Images with size' + this.LFWSampleImages.length)
+          this.isLFWSampleImagesLoading = false;
+        });
+    }
+
   }
 
   toggleImageContainer(el: any) {

@@ -8,9 +8,11 @@ from imageProcessing import returnDetectedFaces
 import shutil
 import base64
 from io import BytesIO
+from get_cnn_matches import get_cnn_embeddings, display_matches
 
 trainingImagePath = "./uploaded_images/trainingDataSet/"
 testingImagePath = "./uploaded_images/testingDataSet/"
+LFWSampleImagePath = '/home/jorgejc2/Documents/ClassRepos/CS549FinalProjectFrontEnd/mtcnn_extracted_faces/Akbar_Hashemi_Rafsanjani/'
 "/home/jorgejc2/Documents/ClassRepos/CS549FinalProjectFrontEnd/CS549Backend/uploaded_images/trainingDataSet"
 
 app = Flask(__name__)
@@ -21,8 +23,10 @@ CORS(app,
                      r"/get-testing-images/*": {"origins": "http://localhost:4200"},
                      r"/get-training-image-faces/*": {"origins": "http://localhost:4200"},
                      r"/get-testing-image-faces/*": {"origins": "http://localhost:4200"},
+                     r"/get-sample-image-faces/*": {"origins": "http://localhost:4200"},
                      r"/flask_sockets/*": {"origins": "http://localhost:4200"},
-                     r"/socket.io/*": {"origins": "http://localhost:4200"}})
+                     r"/socket.io/*": {"origins": "http://localhost:4200"}
+                     })
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -67,7 +71,9 @@ def upload_file():
         for img in uploaded_images:
             if img and allowed_file(img.filename):      
                 img.save(os.path.join(toSavePath, img.filename))
-                image = Image.open(os.path.join(toSavePath, img.filename))   
+                # image = Image.open(os.path.join(toSavePath, img.filename))   
+                # curr_img_embedding = get_cnn_embeddings(image)
+                # display_matches(curr_img_embedding, image)
 
         
 
@@ -142,8 +148,21 @@ def get_testing_image_faces():
 
     return jsonify(final_images)
 
+@app.route('/get-sample-image-faces', methods=['GET'])
+def get_sample_images():
+    start_index = request.args.get('startIndex', type=int, default=0)
+    end_index = start_index + 3
+    image_filenames = os.listdir(LFWSampleImagePath)
+    image_filenames = image_filenames[start_index:end_index]
+    images = []
+    for image_path in image_filenames:
+        # Image.open(LFWSampleImagePath + image_path).show()
+        with open(LFWSampleImagePath + image_path, 'rb') as img_file:
+            encoded_img = base64.b64encode(img_file.read()).decode('utf-8')
+            images.append(encoded_img)
 
-    
+    return jsonify(images)
+
 
 def allowed_file(filename):
     # Implement a function to check the allowed file extensions
