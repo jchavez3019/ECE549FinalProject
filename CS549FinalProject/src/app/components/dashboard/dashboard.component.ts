@@ -38,6 +38,7 @@ export class DashboardComponent implements OnInit {
 
   testingImages: any[] = []; // Array to hold images
   LFWSampleImages: any[] = [];
+  currPredictedLabel: string = "";
   isTestingImagesLoading: boolean = false;
   isLFWSampleImagesLoading: boolean = false;
 
@@ -220,7 +221,7 @@ export class DashboardComponent implements OnInit {
       const startIndex = this.trainingImages.length;
       this.http.get<any>('https://127.0.0.1:5000/get-training-images?startIndex=' + startIndex)
         .subscribe((response: any) => {
-          this.trainingImages = this.trainingImages.concat(response);
+          this.trainingImages = this.trainingImages.concat(response.images);
           this.isTrainingImagesLoading = false;
         });
     }
@@ -249,7 +250,11 @@ export class DashboardComponent implements OnInit {
       const startIndex = this.LFWSampleImages.length;
       this.http.get<any>('https://127.0.0.1:5000/get-sample-image-faces?startIndex=' + 0)
         .subscribe((response: any) => {
-          this.LFWSampleImages = this.LFWSampleImages.concat(response);
+          let parsed_response = []
+          for (let i = 0; i < response.images.length; i++) {
+            parsed_response.push([response.images[i], response.image_paths[i]])
+          }
+          this.LFWSampleImages = this.LFWSampleImages.concat(parsed_response);
           console.log('Recieved LFW Images with size' + this.LFWSampleImages.length)
           this.isLFWSampleImagesLoading = false;
         });
@@ -282,6 +287,15 @@ export class DashboardComponent implements OnInit {
       data: { imageBase64: base64Img, idx: i , isTraining: isTraining} // Pass the base64 image data to the modal
     });
   }
+
+  getPredictedLabel(i: string): void {
+    this.http.get<any>('https://127.0.0.1:5000/get-predicted-label?startIndex=' + i)
+        .subscribe((response: any) => {
+          this.currPredictedLabel = response;
+          console.log('Recieved predicted label' + this.currPredictedLabel)
+        });
+  }
+
   onStartProcessing() {
     
   }

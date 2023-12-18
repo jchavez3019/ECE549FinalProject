@@ -1,5 +1,6 @@
 name: rapids-23.10
 channels:
+  - anaconda
   - nvidia
   - rapidsai
   - conda-forge
@@ -70,7 +71,7 @@ dependencies:
   - cuda-profiler-api=11.8.86=0
   - cuda-python=11.8.3=py310h70a93da_0
   - cuda-version=11.8=h70ddcb2_2
-  - cudatoolkit=11.8.0=h4ba93d1_12
+  - cudatoolkit=11.8.0=h6a678d5_0
   - cudf=23.10.02=cuda11_py310_231116_gece2b2c524_0
   - cudf_kafka=23.10.02=cuda11_py310_231116_gece2b2c524_0
   - cudnn=8.8.0.121=hcdd5f01_4
@@ -428,6 +429,7 @@ dependencies:
   - tblib=3.0.0=pyhd8ed1ab_0
   - tenacity=8.2.3=pyhd8ed1ab_0
   - tensorflow-base=2.14.0=cuda118py310h2e5981e_0
+  - tensorflow-gpu=2.14.0=cuda118py310h0240f8b_0
   - termcolor=2.3.0=pyhd8ed1ab_0
   - terminado=0.18.0=pyh0d859eb_0
   - threadpoolctl=3.2.0=pyha21a80b_0
