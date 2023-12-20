@@ -259,6 +259,9 @@ CORS(app,
                      r"/socket.io/*": {"origins": "http://localhost:4200"}
                      })
 
+"""
+    Routes used by the Dashboard/Main page
+"""
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -378,6 +381,10 @@ def get_testing_image_faces():
         final_images.append(encoded_img)
 
     return jsonify(final_images)
+
+"""
+    Routes used by the LFW page
+"""
 
 @app.route('/get-sample-image-faces', methods=['GET'])
 def get_sample_images():

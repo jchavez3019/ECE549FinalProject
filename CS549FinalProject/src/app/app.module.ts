@@ -31,6 +31,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ModalComponent } from './components/dashboard/modal/modal.component';
+import { LfwComponent } from './components/lfw/lfw.component';
 
 const config: SocketIoConfig = { url: 'https://127.0.0.1:5000/', options: {} };
 
@@ -41,7 +42,8 @@ const config: SocketIoConfig = { url: 'https://127.0.0.1:5000/', options: {} };
     NavBarComponent,
     DescriptionComponent,
     AboutUsComponent,
-    ModalComponent
+    ModalComponent,
+    LfwComponent
   ],
   imports: [
     BrowserModule,

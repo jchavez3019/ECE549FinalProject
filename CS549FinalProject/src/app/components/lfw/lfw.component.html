@@ -1,0 +1,16 @@
+<div class="main-dashboard">
+
+    <div class="sample-images-container">
+        <cdk-virtual-scroll-viewport [itemSize]="LFWSampleImages.length" (scrolledIndexChange)="loadSampleImages()" class="viewport">
+            <mat-grid-list cols="8" rowHeight="1:1">
+                <mat-grid-tile *cdkVirtualFor="let image of LFWSampleImages; let i = index" class="viewport-item">
+                    <img [src]="'data:image/jpeg;base64,' + image[0]" alt="Image {{ i }}" (click)="getPredictedLabel(LFWSampleImages[i][1])">
+                </mat-grid-tile>
+            </mat-grid-list>
+        </cdk-virtual-scroll-viewport>
+    </div>
+
+    <p>{{ currPredictedLabel }}</p>
+
+
+</div>

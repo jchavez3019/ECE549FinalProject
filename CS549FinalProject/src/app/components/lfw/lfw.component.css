@@ -1,0 +1,39 @@
+.main-dashboard {
+    height: 100%;
+    width: 100%;
+}
+
+.mat-icon-colors {
+    background-color: black;
+    border-radius: 2rem;
+    color: white;
+}
+
+.viewport {
+    height: 500px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #e9e7e9;
+}
+
+.viewport-item {
+    cursor: pointer;
+}
+
+.viewport-item:hover {
+    /* Apply a light shade of blue */
+    filter: brightness(120%) saturate(120%) hue-rotate(200deg);
+    /* You can adjust the values to get the desired color and effect */
+}
+
+.imageToggleButtonContainer button {
+    background-color: rgb(73, 126, 239);
+    color: white;
+}
+
+.imageToggleButtonContainer button:disabled {
+    background-color: rgb(144, 147, 156);
+    /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4); */
+    cursor: initial;
+}

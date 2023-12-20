@@ -37,10 +37,7 @@ export class DashboardComponent implements OnInit {
   
 
   testingImages: any[] = []; // Array to hold images
-  LFWSampleImages: any[] = [];
-  currPredictedLabel: string = "";
   isTestingImagesLoading: boolean = false;
-  isLFWSampleImagesLoading: boolean = false;
 
   batchSize: number = 20;
 
@@ -48,9 +45,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(private http: HttpClient, private dialog: MatDialog, private webSocketService: WebSocketService) {}
 
-  ngOnInit(): void {
-    this.loadSampleImages();
-  }
+  ngOnInit(): void {}
 
   /* gets a handle on DOM elements for uploading files */
   @ViewChild('trainingsetInput') trainingsetInput: any;
@@ -243,25 +238,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  loadSampleImages(): void {
-
-    if (!this.isLFWSampleImagesLoading) {
-      this.isLFWSampleImagesLoading = true;
-      const startIndex = this.LFWSampleImages.length;
-      this.http.get<any>('https://127.0.0.1:5000/get-sample-image-faces?startIndex=' + 0)
-        .subscribe((response: any) => {
-          let parsed_response = []
-          for (let i = 0; i < response.images.length; i++) {
-            parsed_response.push([response.images[i], response.image_paths[i]])
-          }
-          this.LFWSampleImages = this.LFWSampleImages.concat(parsed_response);
-          console.log('Recieved LFW Images with size' + this.LFWSampleImages.length)
-          this.isLFWSampleImagesLoading = false;
-        });
-    }
-
-  }
-
   toggleImageContainer(el: any) {
     if (el.id == "toggleTrainingImages") {
       if (this.showTrainingImages == true || !this.uploadedTrainingData) {
@@ -286,14 +262,6 @@ export class DashboardComponent implements OnInit {
       height: '80%', // Adjust the height as needed
       data: { imageBase64: base64Img, idx: i , isTraining: isTraining} // Pass the base64 image data to the modal
     });
-  }
-
-  getPredictedLabel(i: string): void {
-    this.http.get<any>('https://127.0.0.1:5000/get-predicted-label?startIndex=' + i)
-        .subscribe((response: any) => {
-          this.currPredictedLabel = response;
-          console.log('Recieved predicted label' + this.currPredictedLabel)
-        });
   }
 
   onStartProcessing() {

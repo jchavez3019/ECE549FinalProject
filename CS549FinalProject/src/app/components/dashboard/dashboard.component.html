@@ -1,16 +1,10 @@
 <div class="main-dashboard">
 
-    <!-- <div class="image-handling">
+    <div class="image-handling">
         <p class="image-handling-labels">
             Training Dataset
-        </p> -->
-        <!-- <p class="image-handling-labels">
-            Test Dataset
-        </p> -->
-        <!-- <p class="image-handling-labels">
-            Image Preview
-        </p> -->
-        <!-- <div #trainingsetDrop id="trainingsetDrop" class="image-drop" [ngClass]="[(onDragOverTrainingFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
+        </p>
+        <div #trainingsetDrop id="trainingsetDrop" class="image-drop" [ngClass]="[(onDragOverTrainingFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
             (click)="openTrainingsetInput()"
             (dragover)="onDragOver($event, trainingsetDrop)"
             (dragleave)="onDragLeave($event, trainingsetDrop)"
@@ -19,39 +13,10 @@
             <mat-icon class="mat-icon-colors" color="primary">upload</mat-icon>
             <input type="file" #trainingsetInput (change)="handleFiles(trainingsetInput.files, trainingsetDrop)" multiple accept="image/*" style="display: none" />
             
-        </div> -->
-        <!-- <div #testingsetDrop id="testingsetDrop" class="image-drop" [ngClass]="[(onDragOverTestingFlag) ? 'showDropAreaBorder' : 'hideDropAreaBorder']"
-            (click)="openTestingsetInput()"
-            (dragover)="onDragOver($event, testingsetDrop)"
-            (dragleave)="onDragLeave($event, testingsetDrop)"
-            (drop)="onDrop($event, testingsetDrop)">
-            <p>Click or drag a file here to upload.</p>
-            <mat-icon class="mat-icon-colors" color="primary">upload</mat-icon>
-            <input type="file" #testingsetInput (change)="handleFiles(testingsetInput.files, testingsetDrop)" multiple accept="image/*" style="display: none" />
-            
-        </div> -->
-        <!-- <div class="image-preview">
-            <div class="no-image-available" *ngIf="!firstImgUploaded; else display_img">
-                <p>image preview</p>
-                <mat-icon class="mat-icon-colors" color="primary">image</mat-icon>
-            </div>
-            <ng-template #display_img>
-                <img class="uploaded_img" *ngFor="let file of trainingDataFiles" [src]="file.dataURL" alt="Uploaded Image">
-            </ng-template>
-        </div> -->
-    <!-- </div> -->
-
-    <div class="sample-images-container">
-        <cdk-virtual-scroll-viewport [itemSize]="LFWSampleImages.length" (scrolledIndexChange)="loadMoreTestingImages()" class="viewport">
-            <mat-grid-list cols="8" rowHeight="1:1">
-                <mat-grid-tile *cdkVirtualFor="let image of LFWSampleImages; let i = index" class="viewport-item">
-                    <img [src]="'data:image/jpeg;base64,' + image[0]" alt="Image {{ i }}" (click)="getPredictedLabel(LFWSampleImages[i][1])">
-                </mat-grid-tile>
-            </mat-grid-list>
-        </cdk-virtual-scroll-viewport>
+        </div>
     </div>
 
-    <!-- <div id="file-list">
+    <div id="file-list">
         <div class="scrollContainers">
             <p *ngIf="uploadedTrainingData || uploadedTestingData">
                 Training Data Upload Status
@@ -133,6 +98,6 @@
         </div>
     </div>
 
-    <h3> The categorized images are shown below </h3> -->
+    <h3> The categorized images are shown below </h3>
 
 </div>

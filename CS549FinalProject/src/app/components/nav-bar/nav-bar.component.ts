@@ -15,6 +15,9 @@ export class NavBarComponent {
       case 'navToDashboard':
         this.router.navigate(['dashboard']);
         break;
+      case 'navToLFW':
+        this.router.navigate(['lfw']);
+        break;
       case 'navToDescription':
         this.router.navigate(['description']);
         break;

@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DescriptionComponent } from './components/description/description.component';
 import { AboutUsComponent } from './components/about-us/about-us.component';
+import { LfwComponent } from './components/lfw/lfw.component';
 
 /* 
     The 4th entry is a wildcard where any url that 
@@ -11,6 +12,7 @@ import { AboutUsComponent } from './components/about-us/about-us.component';
 */
 export const appRoutes: Routes = [
     { path: 'dashboard', component: DashboardComponent},
+    { path: 'lfw', component: LfwComponent},
     { path: 'description', component: DescriptionComponent}, 
     { path: 'about-us', component: AboutUsComponent},
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
